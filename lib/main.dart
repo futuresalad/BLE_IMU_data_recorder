@@ -33,11 +33,14 @@ class _StreamDataPageState extends State<StreamDataPage> {
     super.initState();
 
     _bleHandler.dataStream.listen((data) {
-      List<double> parsedData = _parseData(data);
-      if (parsedData.isNotEmpty) {
-        setState(() {
-          _parsedData.add(parsedData);
-        });
+      if (data.length > 110) {
+        // Everything else is just info data
+        List<double> parsedData = _parseData(data);
+        if (parsedData.isNotEmpty) {
+          setState(() {
+            _parsedData.add(parsedData);
+          });
+        }
       }
     });
   }
@@ -296,7 +299,10 @@ class _StreamDataPageState extends State<StreamDataPage> {
                       ),
                       const SizedBox(height: 20),
                       IconButton(
-                        onPressed: _sendStartCommand,
+                        onPressed: () {
+                          _clearData();
+                          _sendStartCommand();
+                        },
                         icon: const Icon(Icons.play_arrow_rounded),
                         iconSize: 50,
                       ),
